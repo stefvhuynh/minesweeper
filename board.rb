@@ -5,6 +5,8 @@ class Board
   def self.blank_grid(dimension)
     Array.new(dimension) { Array.new(dimension) }
   end
+  
+  attr_reader :dimension
     
   def initialize(dimension = 9)
     @dimension = dimension
@@ -28,9 +30,7 @@ class Board
   def display
     puts render
   end
-    
-  private  
-    
+        
   # We define our own Board#each_index method to make iteration easier. We 
   # simply pass in a block and the arguments are the rows and columns.
   def each_index(&blk)
@@ -40,6 +40,8 @@ class Board
     
     @grid
   end
+  
+  private
   
   def populate_board
     self.each_index { |row, col| self[row, col] = Tile.new(self, [row, col]) }
@@ -66,6 +68,8 @@ class Board
     rendered = ""
     
     self.each_index do |row, col|
+      rendered += "#{-(row - (@dimension - 1))} " if col == 0
+      
       if self[row, col].bombed?
         rendered += "* " 
       else
@@ -74,14 +78,15 @@ class Board
       rendered += "\n" if col == @dimension - 1
     end
     
-    rendered
+    rendered += "  0 1 2 3 4 5 6 7 8"
   end
   
 end
 
 b = Board.new
 b.display
-p b[4, 4].neighbors
+p b[0, 0].neighbors
+p b[0, 0].reveal
 
 
 

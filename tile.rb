@@ -1,4 +1,12 @@
 class Tile
+  
+  NEIGHBOR_DELTAS = [
+    [ 1,  0], [ 1,  1], 
+    [ 0,  1], [-1,  1], 
+    [-1,  0], [-1, -1], 
+    [ 0, -1], [ 1, -1]
+  ]
+  
   attr_reader :x_pos, :y_pos
   
   def initialize(board, position)
@@ -39,20 +47,22 @@ class Tile
     neighbor_bomb_count
   end
   
-  DELTAS = [[1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1], [0, -1]]
-  
   def neighbors
-    neighbors = []
-    
-    DELTAS.each do |(dx, dy)|
-      neighbors << @board[@x_pos + dx, @y_pos + dy]
+    [].tap do |neighbors|
+      NEIGHBOR_DELTAS.each do |(dx, dy)|
+        if (@x_pos + dx).between?(0, @board.dimension) &&
+           (@y_pos + dy).between?(0, @board.dimension)
+           
+           neighbors << @board[@x_pos + dx, @y_pos + dy]
+        end
+      end
     end
-    
-    neighbors
   end
   
   def inspect
-    { :p => [@x_pos, @y_pos] }.inspect
+    { :p => [@x_pos, @y_pos],
+      :b => bombed?
+    }.inspect
   end
   
 end
