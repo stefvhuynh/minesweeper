@@ -29,6 +29,10 @@ class Tile
     @flagged
   end
   
+  def toggle_flag
+    @flagged = !@flagged
+  end
+  
   def place_flag
     @flagged = true
   end
