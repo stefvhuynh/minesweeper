@@ -14,17 +14,12 @@ class Board
     populate_board
   end
   
-  def [](x, y)
-    # This is a custom bracket method that returns the object at row y, 
-    # column x. We subtract the dimension from the y value and negate it.
-    # This makes the bottom left corner the origin (0, 0), and y goes up
-    # on the coordinate system rather than down. We need to subtract one
-    # from the dimension because of 0-based indexing.
-    @grid[y][x]
+  def [](row, col)
+    @grid[row][col]
   end
   
-  def []=(x, y, obj)
-    @grid[y][x] = obj
+  def []=(row, col, obj)
+    @grid[row][col] = obj
   end
   
   def display
