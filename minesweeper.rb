@@ -1,4 +1,5 @@
 require "./board"
+require "yaml"
 
 class Minesweeper
 
@@ -14,6 +15,7 @@ class Minesweeper
 
       if input == "save"
         save_game
+        return
       elsif input.last == "-c"
         click_tile(input[0].first, input[0].last)
       elsif input.last == "-f"
@@ -40,6 +42,9 @@ class Minesweeper
   end
 
   def save_game
+    print "What should we call your save? "
+    filename = gets.chomp
+    File.write("#{filename}.yml", YAML.dump(self))
     puts "Game saved!"
   end
 
@@ -69,6 +74,7 @@ if __FILE__ == $PROGRAM_NAME
   elsif input == "load"
     print "What is your save file's name? "
     filename = gets.chomp
+    YAML.load_file("#{filename}.yml").play
   end
 end
 
