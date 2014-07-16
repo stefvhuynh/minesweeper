@@ -101,10 +101,20 @@ class Board
   end
 
   def render(show_bombs = false)
-    rendered = "  0 1 2 3 4 5 6 7 8\n"
+    rendered = "   "
+    # Renders the top row to get in the tens digit
+    @dimension.times { |i| rendered += (i / 10 == 0) ? "  " : "#{i / 10} " }
+    rendered += "\n   "
+    # Renders the second row to display the ones digit
+    @dimension.times { |i| rendered += "#{i % 10} " }
+    rendered += "\n"
 
     self.each_index do |row, col|
-      rendered += "#{row} " if col == 0
+      # Renders the row numbers and puts an extra space if the number is a
+      # single digit
+      if col == 0
+        rendered += (row < 10) ? " #{row} " : "#{row} "
+      end
 
       if show_bombs
         if self[row, col].bombed? && self[row, col].flagged?
@@ -131,6 +141,7 @@ class Board
         end
       end
 
+      # Adds a new space after each row
       rendered += "\n" if col == @dimension - 1
     end
 
