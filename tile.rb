@@ -8,12 +8,13 @@ class Tile
   ]
   
   attr_reader :row, :col
+  attr_accessor :adj_bombs
   
   def initialize(board, position)
     @board = board
-    @row = position.first
-    @col = position.last
+    @row, @col = position.first, position.last
     @bombed, @flagged, @revealed = false, false, false
+    @adj_bombs = 0
   end
   
   def bombed?
@@ -50,8 +51,8 @@ class Tile
   def neighbors
     [].tap do |neighbors|
       NEIGHBOR_DELTAS.each do |(drow, dcol)|
-        if (@row + drow).between?(0, @board.dimension) &&
-           (@col + dcol).between?(0, @board.dimension)
+        if (@row + drow).between?(0, @board.dimension - 1) &&
+           (@col + dcol).between?(0, @board.dimension - 1)
            
            neighbors << @board[@row + drow, @col + dcol]
         end

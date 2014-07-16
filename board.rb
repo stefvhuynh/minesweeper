@@ -6,11 +6,12 @@ class Board
     Array.new(dimension) { Array.new(dimension) }
   end
   
-  attr_reader :dimension
+  attr_reader :dimension, :exploded
     
   def initialize(dimension = 9)
     @dimension = dimension
     @grid = self.class.blank_grid(dimension)
+    @exploded = false
     populate_board
   end
   
@@ -20,6 +21,20 @@ class Board
   
   def []=(row, col, obj)
     @grid[row][col] = obj
+  end
+  
+  def reveal_tile(row, col)
+    if self[row, col].bombed?
+      @exploded = true
+      return
+    end
+    
+    unless self[row, col].revealed?
+      self[row, col].adj_bombs = self[row, col].reveal
+      if self[row, col].adj_bombs == 0
+        self[row, col].neighbors.each { |tile| reveal_tile(tile.row, tile.col) }
+      end
+    end
   end
   
   def display
@@ -65,10 +80,16 @@ class Board
     self.each_index do |row, col|
       rendered += "#{row} " if col == 0
       
-      if self[row, col].bombed?
-        rendered += "* " 
+      if self[row, col].revealed?
+        if self[row, col].adj_bombs == 0
+          rendered += "  "
+        else
+          rendered += "#{self[row, col].adj_bombs} "
+        end
+      elsif self[row, col].bombed?
+          rendered += "* " 
       else
-        rendered += "_ "
+        rendered += "- "
       end
       rendered += "\n" if col == @dimension - 1
     end
@@ -80,8 +101,10 @@ end
 
 b = Board.new
 b.display
-p b[0, 0].neighbors
-p b[0, 0].reveal
+b.reveal_tile(8, 8)
+b.display
+p b[8, 8].neighbors
+p b.exploded
 
 
 
