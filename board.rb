@@ -20,11 +20,11 @@ class Board
     # This makes the bottom left corner the origin (0, 0), and y goes up
     # on the coordinate system rather than down. We need to subtract one
     # from the dimension because of 0-based indexing.
-    @grid[-(y - (@dimension - 1))][x]
+    @grid[y][x]
   end
   
   def []=(x, y, obj)
-    @grid[-(y - (@dimension - 1))][x] = obj
+    @grid[y][x] = obj
   end
   
   def display
@@ -65,10 +65,10 @@ class Board
   end
   
   def render
-    rendered = ""
+    rendered = "  0 1 2 3 4 5 6 7 8\n"
     
     self.each_index do |row, col|
-      rendered += "#{-(row - (@dimension - 1))} " if col == 0
+      rendered += "#{row} " if col == 0
       
       if self[row, col].bombed?
         rendered += "* " 
@@ -78,7 +78,7 @@ class Board
       rendered += "\n" if col == @dimension - 1
     end
     
-    rendered += "  0 1 2 3 4 5 6 7 8"
+    rendered
   end
   
 end
