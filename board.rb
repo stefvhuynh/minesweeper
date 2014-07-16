@@ -35,7 +35,7 @@ class Board
   # simply pass in a block and the arguments are the rows and columns.
   def each_index(&blk)
     @dimension.times do |row|
-      @dimension.times { |col| blk.call(row, col) }
+      @dimension.times { |col| blk.call(col, row) }
     end
     
     @grid
@@ -44,15 +44,15 @@ class Board
   private
   
   def populate_board
-    self.each_index { |row, col| self[row, col] = Tile.new(self, [row, col]) }
+    self.each_index { |x, y| self[x, y] = Tile.new(self, [x, y]) }
     place_bombs
   end
   
   def place_bombs
     bomb_positions = random_tiles
     
-    self.each_index do |row, col|
-      self[row, col].place_bomb if bomb_positions.include?([row, col])
+    self.each_index do |x, y|
+      self[x, y].place_bomb if bomb_positions.include?([x, y])
     end
   end
   
@@ -67,15 +67,15 @@ class Board
   def render
     rendered = ""
     
-    self.each_index do |row, col|
-      rendered += "#{-(row - (@dimension - 1))} " if col == 0
+    self.each_index do |x, y|
+      rendered += "#{-(y - (@dimension - 1))} " if x == 0
       
-      if self[row, col].bombed?
+      if self[x, y].bombed?
         rendered += "* " 
       else
         rendered += "_ "
       end
-      rendered += "\n" if col == @dimension - 1
+      rendered += "\n" if x == @dimension - 1
     end
     
     rendered += "  0 1 2 3 4 5 6 7 8"
