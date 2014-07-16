@@ -6,13 +6,29 @@ class Board
     Array.new(dimension) { Array.new(dimension) }
   end
   
-  attr_reader :dimension, :exploded
+  attr_reader :dimension
     
   def initialize(dimension = 9)
     @dimension = dimension
     @grid = self.class.blank_grid(dimension)
     @exploded = false
     populate_board
+  end
+  
+  def exploded?
+    @exploded
+  end
+  
+  def explode_board
+    @exploded = true
+  end
+  
+  def won?
+    self.each_index do |row, col|
+      return false if self[row, col].bombed? && !self[row, col].flagged?
+    end
+    
+    true
   end
   
   def [](row, col)
@@ -30,7 +46,7 @@ class Board
     # Immediate exits if the first tile revealed (prior to the recursion)
     # is a bomb.
     if self[row, col].bombed?
-      @exploded = true
+      explode_board
       return
     end
     
@@ -123,11 +139,11 @@ class Board
   
 end
 
-b = Board.new
-b.toggle_tile_flag(4, 5)
-b.display
-b.reveal_tile(8, 8)
-b.display(true)
+# b = Board.new
+# b.toggle_tile_flag(4, 5)
+# b.display
+# b.reveal_tile(8, 8)
+# b.display(true)
 
 
 
